@@ -4,6 +4,6 @@ resource "aws_instance" "hcptest" {
   key_name = "steamscraper"
   vpc_security_group_ids = ["sg-04505151a4ba55fd5"]
   tags = {
-    Name = "SteamScraperrr"
+    Name = "SteamScraper"
   }
 }

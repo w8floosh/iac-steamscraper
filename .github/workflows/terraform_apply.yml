@@ -11,7 +11,7 @@ env:
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "iac-steamscraper"
   CONFIG_DIRECTORY: "./terraform"
-  AWS_REGION: "us-east-2"
+  AWS_REGION: "us-east-1"
   EKS_CLUSTER: "steamscraper"
 
 jobs:

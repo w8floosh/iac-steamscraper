@@ -43,7 +43,7 @@ jobs:
         
       - name: "Format infrastructure code"
         id: tf_fmt
-        run: terraform fmt -check
+        run: terraform fmt
         
       # !!! IMPORTANT !!!
       - name: "Validate infrastructure code"

@@ -24,7 +24,7 @@ jobs:
   terraform:
     if: github.repository == 'w8floosh/iac-steamscraper'
     name: "Apply Terraform code changes"
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash        

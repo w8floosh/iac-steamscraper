@@ -10,7 +10,7 @@ env:
   TF_CLOUD_ORGANIZATION: "steamscraper"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "iac-steamscraper"
-  CONFIG_DIRECTORY: "./"
+  CONFIG_DIRECTORY: "./terraform"
   AWS_REGION: "us-east-2"
   EKS_CLUSTER: "steamscraper"
 

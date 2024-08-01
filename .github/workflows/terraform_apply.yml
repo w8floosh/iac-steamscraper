@@ -16,9 +16,9 @@ env:
 
 jobs:
   terraform:
-    if: github.repository != 'w8floosh/iac-steamscraper'
+    if: github.repository == 'w8floosh/iac-steamscraper'
     name: "Apply Terraform code changes"
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash        
@@ -52,3 +52,4 @@ jobs:
           run: ${{ steps.apply-run.outputs.run_id }}
           comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
 
+      

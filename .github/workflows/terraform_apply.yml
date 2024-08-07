@@ -12,7 +12,7 @@ env:
   TF_WORKSPACE: "iac-steamscraper"
   CONFIG_DIRECTORY: "./terraform"
   AWS_REGION: "us-east-1"
-  EKS_CLUSTER: "steamscraper"
+  EKS_CLUSTER: "steamscraper-eks"
 
 jobs:
   terraform:
@@ -37,19 +37,25 @@ jobs:
           speculative: true
         
       # APPLY CHANGES
-      - name: Create Apply Run
+      - name: Create apply run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
         id: apply-run
         with:
           workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.config-upload.outputs.configuration_version_id }}
       
-      - name: Apply
+      - name: Apply changes
         uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
         if: fromJSON(steps.apply-run.outputs.payload).data.attributes.actions.IsConfirmable
         id: apply
         with:
           run: ${{ steps.apply-run.outputs.run_id }}
           comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
+      
+      - name: Update kubeconfig file
+        id: kubeconfig-update
+        run: aws eks update-kubeconfig --region ${{env.AWS_REGION}} --name ${{env.EKS_CLUSTER}}
 
+      - name: Install NGINX Ingress Controller
+        run: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/cloud/deploy.yaml
       

@@ -28,34 +28,46 @@ jobs:
       - name: "Fetch infrastructure code"
         uses: actions/checkout@v4
 
-      - name: "Upload configuration to HCP Terraform"
-        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
-        id: config-upload
-        with: 
-          workspace: ${{ env.TF_WORKSPACE }}
-          directory: ${{ env.CONFIG_DIRECTORY }}
-          speculative: true
+      - name: "Setup Terraform"
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: true
         
-      # APPLY CHANGES
-      - name: Create apply run
-        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-        id: apply-run
-        with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          configuration_version: ${{ steps.config-upload.outputs.configuration_version_id }}
+      - name: Terraform init
+        id: init
+        run: terraform init
       
-      - name: Apply changes
-        uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
-        if: fromJSON(steps.apply-run.outputs.payload).data.attributes.actions.IsConfirmable
-        id: apply
-        with:
-          run: ${{ steps.apply-run.outputs.run_id }}
-          comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
+      - name: Terraform format
+        id: fmt
+        run: terraform fmt -check
       
+      - name: Terraform validate
+        id: validate
+        run: terraform validate
+      
+      - name: Terraform plan
+        id: plan
+        run: terraform plan -no-color -input=false
+        continue-on-error: true
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{env.AWS_REGION}}
+          role-to-assume: ${{secrets.AWS_ROLE_ARN}}
+          role-session-name: steamscraper-actions
+        
       - name: Update kubeconfig file
         id: kubeconfig-update
         run: aws eks update-kubeconfig --region ${{env.AWS_REGION}} --name ${{env.EKS_CLUSTER}}
 
       - name: Install NGINX Ingress Controller
         run: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/cloud/deploy.yaml
+
+      - name: Inject TLS certificates into Kubernetes cluster
+        run: |
+          echo ${{secrets.CERT_KEY}} > tls.key
+          echo ${{secrets.CERT_FILE}} > tls.crt
+          kubectl create secret tls tls-cert --key=tls.key --cert=tls.crt
+          rm tls.key tls.crt
       

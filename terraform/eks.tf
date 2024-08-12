@@ -24,27 +24,27 @@ module "eks" {
       name = "frontend-group"
       instance_types = ["t2.micro"]
 
-      min_size     = 2
+      min_size     = 1
       max_size     = 3
-      desired_size = 2
+      desired_size = 1
     }
 
     be = {
       name = "backend-group"
       instance_types = ["t2.micro"]
 
-      min_size     = 2
+      min_size     = 1
       max_size     = 3
-      desired_size = 2
+      desired_size = 1
     }
 
     db = {
       name = "database-cache-group"
       instance_types = ["t2.micro"]
 
-      min_size     = 2
+      min_size     = 1
       max_size     = 3
-      desired_size = 2
+      desired_size = 1
     }
   }
 

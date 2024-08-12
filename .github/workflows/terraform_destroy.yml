@@ -1,0 +1,48 @@
+name: "Destroy SteamScraper AWS infrastructure"
+permissions:
+  id-token: write # This is required for requesting the JWT
+on: workflow_dispatch
+env: 
+  AWS_REGION: "us-east-1"
+
+jobs:
+  terraform:
+    if: github.repository == 'w8floosh/iac-steamscraper'
+    name: "Destroy AWS infrastructure with Terraform"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash        
+        working-directory: ./terraform
+    
+    steps:
+      - name: "Fetch infrastructure code"
+        uses: actions/checkout@v4
+
+      - name: "Setup Terraform"
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: true
+        
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{env.AWS_REGION}}
+          role-to-assume: ${{secrets.AWS_ROLE_ARN}}
+          role-session-name: steamscraper-actions
+        
+      - name: Terraform init
+        id: init
+        run: terraform init
+      
+      - name: Terraform format
+        id: fmt
+        run: terraform fmt
+      
+      - name: Terraform validate
+        id: validate
+        run: terraform validate
+      
+      - name: Terraform destroy
+        id: destroy
+        run: terraform destroy -auto-approve

@@ -1,6 +1,7 @@
 name: "Dry run changes to SteamScraper IAC"
 permissions:
   id-token: write # This is required for requesting the JWT
+  pull-requests: write
 on: 
   push:
     branches:
@@ -22,8 +23,6 @@ jobs:
     if: github.repository == 'w8floosh/iac-steamscraper'
     name: "Plan Terraform code changes"
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
     defaults:
       run:
         shell: bash        

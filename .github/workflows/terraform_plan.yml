@@ -34,6 +34,13 @@ jobs:
         with:
           terraform_wrapper: true
         
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{env.AWS_REGION}}
+          role-to-assume: ${{secrets.AWS_ROLE_ARN}}
+          role-session-name: steamscraper-actions
+      
       - name: Terraform init
         id: init
         run: terraform init

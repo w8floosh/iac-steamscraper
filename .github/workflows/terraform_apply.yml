@@ -29,6 +29,13 @@ jobs:
         with:
           terraform_wrapper: true
         
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{env.AWS_REGION}}
+          role-to-assume: ${{secrets.AWS_ROLE_ARN}}
+          role-session-name: steamscraper-actions
+        
       - name: Terraform init
         id: init
         run: terraform init
@@ -53,15 +60,6 @@ jobs:
       - name: Terraform apply
         id: apply
         run: terraform apply -auto-approve -input=false -parallelism=1 tfplan
-
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: ${{env.AWS_REGION}}
-          role-to-assume: ${{secrets.AWS_ROLE_ARN}}
-          role-session-name: steamscraper-actions
-        
       - name: Update kubeconfig file
         id: kubeconfig-update
         run: aws eks update-kubeconfig --region ${{env.AWS_REGION}} --name ${{env.EKS_CLUSTER}}

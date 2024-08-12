@@ -22,6 +22,8 @@ jobs:
     if: github.repository == 'w8floosh/iac-steamscraper'
     name: "Plan Terraform code changes"
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     defaults:
       run:
         shell: bash        

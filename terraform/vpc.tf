@@ -2,7 +2,7 @@ module "vpc" {
     source = "terraform-aws-modules/vpc/aws"
     version = "5.12.0"
 
-    name = "steamscraper-eks-vpc"
+    name = "steamscraper-vpc"
     # main subnet
     cidr = "172.24.0.0/16"
     # takes the first three available zones 

@@ -21,11 +21,10 @@ terraform {
       }
       
     }
-
     backend "s3" {
       bucket = "steamscraper-terraform"
       key    = "terraform.tfstate"
-      region = var.region
+      region = "us-east-1"
     }
     
     required_version = ">= 1.9.3"

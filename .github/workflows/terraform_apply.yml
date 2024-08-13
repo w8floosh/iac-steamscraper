@@ -69,7 +69,7 @@ jobs:
       - name: Destroy infrastructure if Terraform failed applying
         if: ${{steps.apply.outcome == 'failure'}}
         run: |
-          terraform refresh
+          terraform refresh \
           terraform destroy -auto-approve \
           exit 1
 

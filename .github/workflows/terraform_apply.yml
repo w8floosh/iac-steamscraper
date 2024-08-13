@@ -11,7 +11,10 @@ on:
 
 env: 
   AWS_REGION: "us-east-1"
+  AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
   EKS_CLUSTER: "steamscraper-eks"
+  CERT_KEY: ${{secrets.CERT_KEY}}
+  CERT_FILE: ${{secrets.CERT_FILE}}
 
 jobs:
   terraform:
@@ -81,13 +84,13 @@ jobs:
 
       - name: Inject TLS certificates into Kubernetes cluster
         run: |
-          echo ${{secrets.CERT_KEY}} > steamscraper.io.key
-          echo ${{secrets.CERT_FILE}} > steamscraper.io.crt
+          echo "$CERT_KEY" > steamscraper.io.key
+          echo "$CERT_FILE" > steamscraper.io.crt
           kubectl create secret tls tls-cert --key=steamscraper.io.key --cert=steamscraper.io.crt
           rm steamscraper.io.key steamscraper.io.crt
 
       - name: Configure ECR repository secret
         run: |
           kubectl create secret generic ecr \ 
-          --from-literal=ECR_URL=${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/steamscraper \
+          --from-literal=ECR_URL="$AWS_ACCOUNT_ID".dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/steamscraper \
       

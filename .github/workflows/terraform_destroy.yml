@@ -43,6 +43,10 @@ jobs:
         id: validate
         run: terraform validate
       
+      - name: Terraform refresh state
+        id: refresh
+        run: terraform refresh
+        
       - name: Terraform destroy
         id: destroy
         run: terraform destroy -auto-approve

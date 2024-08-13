@@ -92,5 +92,5 @@ jobs:
       - name: Configure ECR repository secret
         run: |
           kubectl create secret generic ecr \ 
-          --from-literal=ECR_URL="$AWS_ACCOUNT_ID".dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/steamscraper \
+          --from-literal=ECR_URL=${AWS_ACCOUNT_ID}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/steamscraper
       

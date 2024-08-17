@@ -27,6 +27,10 @@ module "eks" {
       min_size     = 1
       max_size     = 3
       desired_size = 1
+
+      labels = {
+        "group" = "frontend-group"
+      }
     }
 
     be = {
@@ -36,6 +40,9 @@ module "eks" {
       min_size     = 1
       max_size     = 3
       desired_size = 1
+      labels = {
+        "group" = "backend-group"
+      }
     }
 
     db = {
@@ -45,6 +52,9 @@ module "eks" {
       min_size     = 1
       max_size     = 3
       desired_size = 1
+      labels = {
+        "group" = "database-cache-group"
+      }
     }
   }
 

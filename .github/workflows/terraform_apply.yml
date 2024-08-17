@@ -96,7 +96,7 @@ jobs:
 
       - name: Configure ECR repository secret
         run: |
-          if ! kubectl get secret ecr >/dev/null 2>&1; then
+          if ! kubectl get secret ecr -n backend >/dev/null 2>&1; then
             kubectl create secret generic ecr --from-literal=ECR_URL=$AWS_ACCOUNT_ID.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/steamscraper -n backend
           else
             echo "Secret 'ecr' already exists."

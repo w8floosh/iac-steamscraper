@@ -89,9 +89,9 @@ jobs:
 
           SECRET_NAME="tls-cert"
           NAMESPACES=("backend" "frontend" "database")
-          KEY = steamscraper.io.key
-          CERT = steamscraper.io.crt
-          
+          KEY="steamscraper.io.key"
+          CERT="steamscraper.io.crt"
+
           for NAMESPACE in "${NAMESPACES[@]}"; do
             if ! kubectl get secret tls-cert -n $NAMESPACE >/dev/null 2>&1; then
               kubectl create secret tls $SECRET_NAME --key=$KEY --cert=$CERT -n $NAMESPACE

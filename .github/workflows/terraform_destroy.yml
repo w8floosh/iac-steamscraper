@@ -42,7 +42,14 @@ jobs:
       - name: Terraform validate
         id: validate
         run: terraform validate
-        
+      
+      - name: Update kubeconfig file
+        id: kubeconfig-update
+        run: aws eks update-kubeconfig --region ${{env.AWS_REGION}} --name ${{env.EKS_CLUSTER}}
+
+      - name: Remove NGINX ingress controller
+        run: kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/cloud/deploy.yaml
+
       - name: Terraform destroy
         id: destroy
         run: terraform destroy -auto-approve

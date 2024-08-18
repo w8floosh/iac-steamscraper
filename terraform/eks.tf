@@ -22,7 +22,7 @@ module "eks" {
   eks_managed_node_groups = { 
     fe = {
       name = "frontend-group"
-      instance_types = ["t2.micro"]
+      instance_types = ["t2.small"]
 
       min_size     = 1
       max_size     = 3
@@ -36,7 +36,7 @@ module "eks" {
 
     be = {
       name = "backend-group"
-      instance_types = ["t2.micro"]
+      instance_types = ["t2.small"]
 
       min_size     = 1
       max_size     = 3
@@ -50,7 +50,7 @@ module "eks" {
 
     db = {
       name = "database-cache-group"
-      instance_types = ["t2.micro"]
+      instance_types = ["t2.small"]
 
       min_size     = 1
       max_size     = 3

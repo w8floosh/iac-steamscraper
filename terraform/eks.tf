@@ -28,6 +28,7 @@ module "eks" {
       max_size     = 3
       desired_size = 1
 
+      max_pods = 8
       labels = {
         "group" = "frontend-group"
       }
@@ -40,6 +41,8 @@ module "eks" {
       min_size     = 1
       max_size     = 3
       desired_size = 1
+      max_pods = 8
+     
       labels = {
         "group" = "backend-group"
       }
@@ -52,6 +55,8 @@ module "eks" {
       min_size     = 1
       max_size     = 3
       desired_size = 1
+
+      max_pods = 8
       labels = {
         "group" = "database-cache-group"
       }

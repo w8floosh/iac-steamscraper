@@ -78,10 +78,7 @@ jobs:
       - name: Update kubeconfig file
         id: kubeconfig-update
         run: aws eks update-kubeconfig --region ${{env.AWS_REGION}} --name ${{env.EKS_CLUSTER}}
-
-      - name: Install NGINX Ingress Controller
-        run: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/cloud/deploy.yaml
-
+        
       - name: Inject TLS certificates into Kubernetes cluster
         run: |
           echo "$CERT_KEY" > steamscraper.io.key
@@ -97,11 +94,16 @@ jobs:
             echo "Secret '$SECRET_NAME' already exists in namespace 'default'."
           fi
 
-          if ! kubectl get secret tls-cert -n ingress-nginx >/dev/null 2>&1; then
-            kubectl create secret tls $SECRET_NAME --key=$KEY --cert=$CERT -n ingress-nginx
-          else
-            echo "Secret '$SECRET_NAME' already exists in namespace 'ingress-nginx'."
-          fi
-      
           rm steamscraper.io.key steamscraper.io.crt
       
+      - name: Install NGINX Ingress Controller
+        run: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/cloud/deploy.yaml
+
+      - name: Update NGINX Ingress Controller Deployment
+        run: |
+          kubectl patch deployment ingress-nginx-controller -n ingress-nginx \
+          --type=json -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--default-ssl-certificate=default/tls-cert"}]'
+
+      - name: Restart NGINX Ingress Controller Deployment to apply new changes
+        run: |
+          kubectl rollout restart deployment ingress-nginx-controller -n ingress-nginx
